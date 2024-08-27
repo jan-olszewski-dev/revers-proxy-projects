@@ -1,0 +1,15 @@
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./config:/etc/nginx/conf.d
+    networks:
+      reverse-proxy-network:
+    restart: always
+
+networks:
+  reverse-proxy-network:
+    name: "reverse-proxy-network"
+    driver: bridge

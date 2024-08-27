@@ -1,0 +1,32 @@
+services:
+  nginx:
+    image: nginx
+    container_name: projectone-nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./app:/app
+    networks:
+      reverse-proxy-network:
+        aliases:
+          - project-one
+          - project-one.local
+      project-one-network:
+    depends_on:
+      php:
+        condition: service_healthy
+
+  php:
+    image: php:8.3-fpm
+    volumes:
+      - ./app:/app
+    networks:
+      project-one-network:
+    environment:
+      PHP_IDE_CONFIG: "serverName=project-one.local"
+    healthcheck:
+      test: [ "CMD", "php", "-v" ]
+
+networks:
+  project-one-network:
+  reverse-proxy-network:
+    external: true
